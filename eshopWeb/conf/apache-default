@@ -1,0 +1,89 @@
+<VirtualHost *:80>
+        ServerAdmin webmaster@localhost
+        
+
+        DocumentRoot /var/www/eshop
+        <Directory />
+                Options FollowSymLinks
+                AllowOverride None
+        </Directory>
+        <Directory /var/www/eshop>
+                Options -Indexes +FollowSymLinks -MultiViews
+                # To make wordpress .htaccess work
+                AllowOverride FileInfo
+                Order allow,deny
+                allow from all
+        </Directory>
+
+        ScriptAlias /cgi-bin/ /usr/lib/cgi-bin/
+        <Directory "/usr/lib/cgi-bin">
+                AllowOverride None
+                Options +ExecCGI -MultiViews +SymLinksIfOwnerMatch
+                Order allow,deny
+                Allow from all
+        </Directory>
+
+        ErrorLog ${APACHE_LOG_DIR}/apache-${HOSTNAME}-00_error.log
+
+        # Possible values include: debug, info, notice, warn, error, crit,
+        # alert, emerg.
+        LogLevel warn
+
+        CustomLog ${APACHE_LOG_DIR}/apache-${HOSTNAME}-00_access.log combined
+
+	#
+	# Set HTTPS environment variable if we came in over secure channel.
+	# SetEnvIf x-forwarded-proto https HTTPS=on
+
+</VirtualHost>
+
+
+
+<VirtualHost *:443>
+        ServerAdmin webmaster@localhost
+        ServerAlias *.pvgl.sap.corp
+
+        DocumentRoot /var/www/eshop
+        <Directory />
+                Options FollowSymLinks
+                AllowOverride None
+        </Directory>
+        <Directory /var/www/eshop>
+                Options -Indexes +FollowSymLinks -MultiViews
+                # To make wordpress .htaccess work
+                AllowOverride FileInfo
+                Order allow,deny
+                allow from all
+        </Directory>
+
+        ScriptAlias /cgi-bin/ /usr/lib/cgi-bin/
+        <Directory "/usr/lib/cgi-bin">
+                AllowOverride None
+                Options +ExecCGI -MultiViews +SymLinksIfOwnerMatch
+                Order allow,deny
+                Allow from all
+        </Directory>
+
+        ErrorLog ${APACHE_LOG_DIR}/apache-${HOSTNAME}-00_error-ssl.log
+
+        # Possible values include: debug, info, notice, warn, error, crit,
+        # alert, emerg.
+        LogLevel warn
+
+        CustomLog ${APACHE_LOG_DIR}/apache-${HOSTNAME}-00_access-ssl.log combined
+
+        #
+        # Set HTTPS environment variable if we came in over secure
+        #  channel.
+        # SetEnvIf x-forwarded-proto https HTTPS=on
+		
+		SSLEngine On
+		#SSLCertificateFile /etc/apache2/ssl/pvgl.sap.corp.pem
+		SSLCertificateFile /etc/apache2/ssl/sapanywhere.sap.corp.crt
+		SSLCertificateKeyFile /etc/apache2/ssl/sapanywhere.sap.corp.key
+        
+        SSLProtocol ALL -SSLv2 -SSLv3 -TLSv1
+        
+        # set Strict-Transport-Security with one year
+        Header always set Strict-Transport-Security "max-age=31536000;includeSubDomains"
+</VirtualHost>
